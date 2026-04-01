@@ -1,5 +1,7 @@
 
 package view;
+import dao.ProdutosDAO;
+import view.TelaVendas;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import javax.swing.JOptionPane;
@@ -30,7 +32,9 @@ public class ListaVIEW extends javax.swing.JFrame {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tabelaProdutos = new javax.swing.JTable();
+        btnVender = new javax.swing.JButton();
+        btnConsultarVendas = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -39,7 +43,7 @@ public class ListaVIEW extends javax.swing.JFrame {
             }
         });
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tabelaProdutos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -50,7 +54,13 @@ public class ListaVIEW extends javax.swing.JFrame {
                 "ID", "Nome", "Valor", "Status"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tabelaProdutos);
+
+        btnVender.setText("Vender");
+        btnVender.addActionListener(this::btnVenderActionPerformed);
+
+        btnConsultarVendas.setText("Consultar Vendas");
+        btnConsultarVendas.addActionListener(this::btnConsultarVendasActionPerformed);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -60,13 +70,23 @@ public class ListaVIEW extends javax.swing.JFrame {
                 .addGap(22, 22, 22)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(24, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(55, 55, 55)
+                .addComponent(btnVender)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnConsultarVendas)
+                .addGap(63, 63, 63))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(14, 14, 14)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(169, Short.MAX_VALUE))
+                .addGap(38, 38, 38)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnVender)
+                    .addComponent(btnConsultarVendas))
+                .addContainerGap(104, Short.MAX_VALUE))
         );
 
         pack();
@@ -80,7 +100,7 @@ public class ListaVIEW extends javax.swing.JFrame {
     PreparedStatement pst = conn.prepareStatement(sql);
     ResultSet rs = pst.executeQuery();
 
-    DefaultTableModel modelo = (DefaultTableModel) jTable1.getModel();
+    DefaultTableModel modelo = (DefaultTableModel) tabelaProdutos.getModel();
     modelo.setRowCount(0);
 
     while (rs.next()) {
@@ -95,7 +115,31 @@ public class ListaVIEW extends javax.swing.JFrame {
 } catch (Exception e) {
     e.printStackTrace();
     }//GEN-LAST:event_formWindowOpened
+
+   }
+    
+    private void btnVenderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVenderActionPerformed
+        // TODO add your handling code here:
+        int linha = tabelaProdutos.getSelectedRow();
+
+if (linha != -1) {
+    int id = Integer.parseInt(tabelaProdutos.getValueAt(linha, 0).toString());
+
+    ProdutosDAO dao = new ProdutosDAO();
+    dao.venderProduto(id);
+
+    javax.swing.JOptionPane.showMessageDialog(this, "Produto vendido!");
+} else {
+    javax.swing.JOptionPane.showMessageDialog(this, "Selecione um produto!");
 }
+    }//GEN-LAST:event_btnVenderActionPerformed
+
+    private void btnConsultarVendasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultarVendasActionPerformed
+        // TODO add your handling code here:
+        TelaVendas tela = new TelaVendas();
+        tela.setVisible(true);
+    }//GEN-LAST:event_btnConsultarVendasActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -122,7 +166,10 @@ public class ListaVIEW extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnConsultarVendas;
+    private javax.swing.JButton btnVender;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JTable tabelaProdutos;
     // End of variables declaration//GEN-END:variables
 }
+
